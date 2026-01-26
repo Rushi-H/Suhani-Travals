@@ -1,311 +1,367 @@
-# Cab Booking Admin Dashboard
+# 🚌 Cab Booking Admin System
 
-A comprehensive MERN stack admin dashboard for managing cab/bus bookings between Akluj and Pune. Features real-time seat management, booking approval workflow, and automated notifications via email and WhatsApp.
+A full-stack MERN application for managing cab bookings with real-time seat updates, admin dashboard, and customer booking interface.
 
-## 🚀 Features
+![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
 
-### Core Functionality
-- **Booking Management**: View and manage all incoming booking requests with Accept/Reject actions
-- **Real-time Seat Management**: Interactive seat map with manual override for offline bookings
-- **Trip Status Control**: Manage trip lifecycle (Scheduled → Boarding → Full → Departed)
-- **Automated Notifications**: Email (Nodemailer) and WhatsApp (Twilio) notifications on booking approval/rejection
-- **Live Dashboard**: Real-time updates via Socket.io across all connected clients
-- **Revenue Analytics**: Daily revenue tracking and occupancy statistics
+## ✨ Features
 
-### Vehicle Support
-- Maruti Suzuki Ertiga (7 seats)
-- Tata Winger 12-seater (12 seats)
-- BharatBenz 1017 (20 seats)
+### 🔐 Authentication
+- **Separate login** for customers and admins
+- JWT-based authentication with 7-day token expiry
+- Password hashing with bcrypt
+- Protected routes with role-based access control
+
+### 👥 Customer Features
+- User registration and login
+- Search available trips by date and route
+- Interactive seat selection with real-time updates
+- Book multiple seats in a single transaction
+- View booking confirmation
+
+### 🎛️ Admin Features
+- Admin dashboard with live statistics
+- **Create and manage trips** with vehicle and driver assignment
+- **Driver management** - Add, edit, and assign drivers to vehicles
+- Approve/reject booking requests
+- Manual seat booking for walk-in customers
+- Real-time fleet status monitoring
+- Revenue analytics and occupancy tracking
+- Trip status management (Scheduled, Boarding, Departed, etc.)
+
+### 🚗 Fleet Management
+- Vehicle inventory management
+- Driver profiles with license tracking
+- Assign drivers to specific vehicles
+- Track driver availability and experience
+
+### 🔄 Real-time Updates
+- Socket.io integration for live seat availability
+- Instant booking notifications
+- Real-time dashboard updates
+
+## 🛠️ Tech Stack
+
+**Frontend:**
+- React 18 with Vite
+- Material-UI (MUI) for components
+- React Router for navigation
+- Socket.io-client for real-time updates
+- Axios for API calls
+- React Toastify for notifications
+
+**Backend:**
+- Node.js & Express.js
+- MongoDB with Mongoose ODM
+- JWT for authentication
+- bcryptjs for password hashing
+- Socket.io for WebSocket connections
+- Nodemon for development
 
 ## 📋 Prerequisites
 
-- **Node.js** (v16 or higher)
-- **MongoDB** (local or MongoDB Atlas)
-- **Gmail Account** (for email notifications)
-- **Twilio Account** (for WhatsApp notifications)
+- Node.js (v16 or higher)
+- MongoDB (local or MongoDB Atlas)
+- npm or yarn
 
-## 🛠️ Installation
+## 🚀 Installation
 
-### 1. Clone or Navigate to Project Directory
+### 1. Clone the repository
+
 ```bash
-cd d:/projects/Suhani
+git clone <your-repo-url>
+cd Suhani
 ```
 
-### 2. Backend Setup
+### 2. Install Backend Dependencies
 
 ```bash
 cd backend
 npm install
 ```
 
-Create a `.env` file in the `backend` directory:
-
-```env
-# Server Configuration
-PORT=5000
-NODE_ENV=development
-
-# MongoDB
-MONGODB_URI=mongodb://localhost:27017/cab-booking-admin
-
-# JWT Secret
-JWT_SECRET=your_super_secret_jwt_key_here
-
-# Email Configuration (Gmail)
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASSWORD=your-gmail-app-password
-EMAIL_FROM=Cab Booking Service <your-email@gmail.com>
-
-# Twilio Configuration
-TWILIO_ACCOUNT_SID=your_twilio_account_sid
-TWILIO_AUTH_TOKEN=your_twilio_auth_token
-TWILIO_WHATSAPP_NUMBER=whatsapp:+14155238886
-
-# Frontend URL
-FRONTEND_URL=http://localhost:5173
-```
-
-**Important Notes:**
-- For Gmail, use an [App Password](https://support.google.com/accounts/answer/185833) instead of your regular password
-- For Twilio WhatsApp, you need to activate the [Twilio Sandbox](https://www.twilio.com/docs/whatsapp/sandbox)
-
-### 3. Frontend Setup
+### 3. Install Frontend Dependencies
 
 ```bash
 cd ../frontend
 npm install
 ```
 
-### 4. Seed Database (Optional but Recommended)
+### 4. Environment Setup
 
-```bash
-cd ../backend
-npm run seed
+Create a `.env` file in the `backend` folder:
+
+```env
+# Server Configuration
+PORT=5000
+NODE_ENV=development
+
+# MongoDB (choose one)
+# Local MongoDB
+MONGODB_URI=mongodb://localhost:27017/cab-booking-admin
+
+# OR MongoDB Atlas
+# MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/cab-booking-admin?retryWrites=true&w=majority
+
+# JWT Secret
+JWT_SECRET=your_super_secret_jwt_key_change_this
+
+# Frontend URL (for CORS)
+FRONTEND_URL=http://localhost:5173
+
+# Email Configuration (Optional - for notifications)
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASSWORD=your-app-password
+
+# Twilio Configuration (Optional - for WhatsApp)
+TWILIO_ACCOUNT_SID=your_twilio_account_sid
+TWILIO_AUTH_TOKEN=your_twilio_auth_token
+TWILIO_WHATSAPP_NUMBER=whatsapp:+14155238886
 ```
 
-This will create:
-- 3 vehicles (Ertiga, Winger, BharatBenz)
-- Sample trips for today with different departure times
+### 5. Database Setup
 
-## 🚀 Running the Application
+**Option A: Local MongoDB**
 
-### Start Backend Server
+1. Install MongoDB Community Edition
+2. Start MongoDB service:
+   ```bash
+   # Windows
+   net start MongoDB
+   
+   # macOS/Linux
+   sudo systemctl start mongod
+   ```
 
+**Option B: MongoDB Atlas**
+
+1. Create account at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+2. Create a cluster
+3. Get connection string and update `.env`
+
+### 6. Seed the Database
+
+```bash
+cd backend
+
+# Create default admin user
+npm run seed:admin
+# Username: admin
+# Password: admin123
+
+# Seed sample vehicles (backend must be running)
+# Visit: http://localhost:5000/api/admin/vehicles/seed
+# Or run:
+curl -X POST http://localhost:5000/api/admin/vehicles/seed
+```
+
+## 🎮 Running the Application
+
+### Development Mode
+
+**Terminal 1 - Backend:**
 ```bash
 cd backend
 npm run dev
 ```
+Server runs on `http://localhost:5000`
 
-Backend will run on `http://localhost:5000`
-
-### Start Frontend Development Server
-
-Open a new terminal:
-
+**Terminal 2 - Frontend:**
 ```bash
 cd frontend
 npm run dev
 ```
+App runs on `http://localhost:5173`
 
-Frontend will run on `http://localhost:5173`
+### Production Build
 
-## 📡 API Endpoints
-
-### Admin Routes
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/admin/bookings` | Fetch all bookings (with filters) |
-| PUT | `/api/admin/bookings/:id/status` | Accept/Reject booking |
-| GET | `/api/admin/trips` | Fetch all trips |
-| PATCH | `/api/admin/trips/:tripId/seats` | Manual seat override |
-| PATCH | `/api/admin/trips/:tripId/status` | Update trip status |
-| GET | `/api/admin/dashboard/stats` | Dashboard statistics |
-
-### Trip Routes
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/trips` | Fetch available trips (customer view) |
-| POST | `/api/trips` | Create new trip (admin) |
-| GET | `/api/trips/:id` | Get trip details |
-| POST | `/api/trips/:id/bookings` | Create booking (customer) |
-
-### Authentication
-
-For development, generate an admin token:
-
+**Backend:**
 ```bash
-GET http://localhost:5000/api/admin/generate-token
+cd backend
+npm start
 ```
 
-Use the returned token in the `Authorization` header:
-```
-Authorization: Bearer <token>
-```
-
-## 🎨 Dashboard Features
-
-### 1. Pending Requests Section
-- View all pending bookings in a table
-- Customer details (name, phone, email)
-- Trip information and seat numbers
-- Accept/Reject buttons with notification triggers
-
-### 2. Live Fleet Status
-- Real-time vehicle occupancy visualization
-- Trip status dropdown (Scheduled, Boarding, Full, Departed)
-- Revenue tracking per vehicle
-- Interactive seat map access
-
-### 3. Seat Map
-- Color-coded seats:
-  - 🟢 **Green**: Vacant (available for booking)
-  - 🔴 **Red**: Manual Booking (offline/phone booking)
-  - 🔵 **Blue**: Online Booking (confirmed)
-- Click to toggle seat status (Full ↔ Vacant)
-- Real-time updates across all clients
-
-### 4. Daily Revenue Analytics
-- Bar chart showing revenue by vehicle
-- Total revenue, bookings count, and occupancy rate
-- Auto-updates with new bookings
-
-## 🔄 Real-time Features (Socket.io)
-
-The dashboard automatically updates when:
-- New booking is created
-- Booking status changes (Accept/Reject)
-- Seat status is manually updated
-- Trip status changes
-- Any trip data is modified
-
-## 🧪 Testing the Application
-
-### 1. Create a Test Booking
-
+**Frontend:**
 ```bash
-curl -X POST http://localhost:5000/api/trips/<trip-id>/bookings \
-  -H "Content-Type: application/json" \
-  -d '{
-    "user": {
-      "name": "Test User",
-      "email": "test@example.com",
-      "phone": "+919876543210"
-    },
-    "seatNumbers": [1, 2],
-    "pickupLocation": "Akluj Bus Stand",
-    "payment": {
-      "method": "Online",
-      "status": "Completed",
-      "transactionId": "TEST123"
-    }
-  }'
+cd frontend
+npm run build
+npm run preview
 ```
 
-### 2. Accept a Booking
+## 📱 Usage
 
-```bash
-curl -X PUT http://localhost:5000/api/admin/bookings/<booking-id>/status \
-  -H "Content-Type: application/json" \
-  -d '{"status": "Accepted"}'
-```
+### Admin Access
+1. Navigate to `http://localhost:5173`
+2. Click "Admin Dashboard"
+3. Login with:
+   - **Username:** `admin`
+   - **Password:** `admin123`
+4. Features:
+   - View pending booking requests
+   - Create new trips with vehicle/driver assignment
+   - Manage drivers and vehicles
+   - Monitor fleet status
+   - View revenue analytics
 
-### 3. Manual Seat Override
+### Customer Access
+1. Navigate to `http://localhost:5173`
+2. Click "Book a Ride"
+3. Sign up for a new account or login
+4. Search for available trips
+5. Select seats and complete booking
 
-```bash
-curl -X PATCH http://localhost:5000/api/admin/trips/<trip-id>/seats \
-  -H "Content-Type: application/json" \
-  -d '{
-    "seatNumber": 5,
-    "isBooked": true,
-    "bookedBy": "Offline-Admin"
-  }'
-```
-
-## 📱 Notification System
-
-### Email Notifications
-- Sent via Nodemailer using Gmail SMTP
-- Beautiful HTML templates with booking details
-- Triggered on Accept/Reject actions
-
-### WhatsApp Notifications
-- Sent via Twilio WhatsApp API
-- Formatted messages with trip details
-- Requires Twilio Sandbox setup for testing
-
-## 🏗️ Project Structure
+## 🗂️ Project Structure
 
 ```
 Suhani/
 ├── backend/
-│   ├── controllers/
+│   ├── controllers/      # Request handlers
 │   │   ├── adminController.js
-│   │   └── tripController.js
-│   ├── models/
+│   │   ├── authController.js
+│   │   ├── driverController.js
+│   │   ├── tripController.js
+│   │   └── vehicleController.js
+│   ├── models/          # Mongoose schemas
+│   │   ├── Admin.js
 │   │   ├── Booking.js
+│   │   ├── Driver.js
 │   │   ├── Trip.js
+│   │   ├── User.js
 │   │   └── Vehicle.js
-│   ├── routes/
+│   ├── routes/          # API routes
 │   │   ├── admin.routes.js
+│   │   ├── auth.routes.js
 │   │   └── trip.routes.js
-│   ├── services/
-│   │   ├── notificationService.js
-│   │   └── socketService.js
-│   ├── middleware/
+│   ├── middleware/      # Custom middleware
 │   │   ├── auth.js
 │   │   └── errorHandler.js
-│   ├── server.js
-│   ├── seedDatabase.js
+│   ├── services/        # Business logic
+│   │   ├── notificationService.js
+│   │   └── socketService.js
+│   ├── .env            # Environment variables
+│   ├── server.js       # Entry point
 │   └── package.json
+│
 ├── frontend/
 │   ├── src/
-│   │   ├── components/
+│   │   ├── components/     # Reusable components
+│   │   │   ├── BookingForm.jsx
 │   │   │   ├── BookingTable.jsx
+│   │   │   ├── CreateTripDialog.jsx
 │   │   │   ├── FleetCard.jsx
+│   │   │   ├── ManageDriverDialog.jsx
+│   │   │   ├── ProtectedRoute.jsx
 │   │   │   ├── RevenueChart.jsx
 │   │   │   └── SeatMap.jsx
-│   │   ├── pages/
-│   │   │   └── AdminDashboard.jsx
-│   │   ├── services/
+│   │   ├── context/        # React context
+│   │   │   └── AuthContext.jsx
+│   │   ├── pages/          # Page components
+│   │   │   ├── AdminDashboard.jsx
+│   │   │   ├── CustomerBooking.jsx
+│   │   │   ├── HomePage.jsx
+│   │   │   ├── Login.jsx
+│   │   │   └── Signup.jsx
+│   │   ├── services/       # API & Socket services
 │   │   │   ├── api.js
 │   │   │   └── socket.js
 │   │   ├── App.jsx
 │   │   └── main.jsx
-│   ├── index.html
-│   ├── vite.config.js
 │   └── package.json
+│
 └── README.md
 ```
 
+## 🔌 API Endpoints
+
+### Authentication
+- `POST /api/auth/customer/signup` - Customer registration
+- `POST /api/auth/customer/login` - Customer login
+- `POST /api/auth/admin/login` - Admin login
+- `GET /api/auth/verify` - Verify JWT token
+
+### Trips
+- `GET /api/trips` - Get available trips
+- `GET /api/trips/:id` - Get trip details
+- `POST /api/trips/book` - Create booking (requires auth)
+
+### Admin (Protected)
+- `GET /api/admin/bookings` - Get all bookings
+- `PUT /api/admin/bookings/:id/status` - Update booking status
+- `GET /api/admin/trips` - Get all trips
+- `POST /api/admin/trips` - Create new trip
+- `PATCH /api/admin/trips/:id/status` - Update trip status
+- `GET /api/admin/drivers` - Get all drivers
+- `POST /api/admin/drivers` - Create driver
+- `PUT /api/admin/drivers/:id` - Update driver
+- `DELETE /api/admin/drivers/:id` - Delete driver
+- `GET /api/admin/vehicles` - Get all vehicles
+- `POST /api/admin/vehicles` - Create vehicle
+- `GET /api/admin/dashboard/stats` - Get dashboard statistics
+
+### Public
+- `POST /api/admin/vehicles/seed` - Seed sample vehicles
+
+## 🔒 Security Features
+
+- JWT-based authentication
+- Password hashing with bcrypt (10 salt rounds)
+- Protected API routes with middleware
+- Role-based access control (Customer/Admin)
+- CORS configuration
+- Input validation
+- Secure HTTP headers
+
+## 🎨 UI Features
+
+- Modern Material-UI design
+- Responsive layout for all devices
+- Real-time seat availability visualization
+- Interactive seat selection
+- Toast notifications for user feedback
+- Loading states and error handling
+- Gradient backgrounds and smooth animations
+
 ## 🐛 Troubleshooting
 
-### MongoDB Connection Error
-- Ensure MongoDB is running: `mongod` or check MongoDB Atlas connection
-- Verify `MONGODB_URI` in `.env` file
+### MongoDB Connection Issues
+- Ensure MongoDB service is running
+- Check connection string in `.env`
+- For Atlas: Verify IP whitelist and credentials
 
-### Email Not Sending
-- Use Gmail App Password, not regular password
-- Enable "Less secure app access" (if using older Gmail)
-- Check EMAIL_USER and EMAIL_PASSWORD in `.env`
+### Port Already in Use
+```bash
+# Windows
+netstat -ano | findstr :5000
+taskkill /PID <PID> /F
 
-### WhatsApp Not Sending
-- Join Twilio Sandbox: Send "join <sandbox-keyword>" to Twilio WhatsApp number
-- Verify TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN
-- Check phone number format: +91XXXXXXXXXX
+# macOS/Linux
+lsof -ti:5000 | xargs kill -9
+```
 
-### Socket.io Not Connecting
-- Ensure backend is running on port 5000
-- Check browser console for connection errors
-- Verify CORS settings in backend
+### Dependencies Issues
+```bash
+# Clear cache and reinstall
+rm -rf node_modules package-lock.json
+npm install
+```
 
 ## 📝 License
 
-ISC
+This project is licensed under the MIT License.
 
 ## 👨‍💻 Author
 
-Built with ❤️ for Akluj-Pune cab booking service
+Created with ❤️ by [Your Name]
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+## ⭐ Show your support
+
+Give a ⭐️ if this project helped you!
